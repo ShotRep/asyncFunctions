@@ -68,19 +68,103 @@ At the core of async functions are promises, async functions are just syntactic 
 //   return x + y
 
 // II. standard promise
-function add(x, y) {
+// function add(x, y) {
+//   return new Promise((resolve, reject) => {
+//     if (typeof x !== "number" || typeof y !== "number") {
+//       reject("X and Y must be numbers.")
+//     }
+//     resolve(x + y)
+//   })
+// }
+
+// add('5', 6)
+//   .then((val) => {
+//     console.log("Promise Resolved: ", val)
+//   })
+//   .catch((err) => {
+//     console.log("Promise Rejected: ", err)
+//   })
+
+/*       AWAIT keyword       */
+
+// function getPlanets() {
+//   return axios.get('https://swapi.dev/api/planets')
+// }
+
+// getPlanets().then((res) => {
+//    console.log(res.data)
+// })
+
+//an easier way
+
+// async function getPlanets() {
+//   const res = await axios.get('https://swapi.dev/api/planets')
+//   console.log(res.data.results)
+// }
+// getPlanets()
+
+//what if its rejects or not resolved? how do we handle .catch using await?
+
+// async function getPlanets() {
+//   const res = await axios.get("https://swapi.dev/api/planetz")
+//   console.log(res.data.results)
+// }
+
+//1. using .catch  -  can catch many errors -  not specific.
+// getPlanets().catch((err) => {
+//   console.log("Error added to catch:", err)
+//   // console.log(err)
+// })
+
+//2. using try block code with catch - catch 1 error - specific to what we are doing
+// async function getPlanets() {
+//   try {
+//     const res = await axios.get("https://swapi.dev/api/planetz")
+//     console.log(res.data.results)
+//   } catch (err) {
+//     console.log("Error added to catch", err)
+//   }
+// }
+// getPlanets()
+
+/*            MULTIPLE AWAITS            */
+
+//from a past exercise, moving button until it can no longer move rejecting the promise.
+const moveX = (element, amount, delay) => {
   return new Promise((resolve, reject) => {
-    if (typeof x !== "number" || typeof y !== "number") {
-      reject("X and Y must be numbers.")
-    }
-    resolve(x + y)
+    setTimeout(() => {
+      const bodyBoundary = document.body.clientWidth
+      const elRight = element.getBoundingClientRect().right
+      const currLeft = element.getBoundingClientRect().left
+      if (elRight + amount > bodyBoundary) {
+        reject({bodyBoundary, elRight, amount})
+      } else {
+        element.style.transform = `translateX(${currLeft + amount}px)`
+        resolve()
+      }
+    }, delay)
   })
 }
 
-add("q", 6)
-  .then((val) => {
-    console.log("Promise Resolved: ", val)
-  })
-  .catch((err) => {
-    console.log("Promise Rejected: ", err)
-  })
+const btn = document.querySelector("button")
+async function animateRight(el) {
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+  await moveX(el, 100, 1000)
+}
+animateRight(btn).catch((err) => {
+  console.log("Can no longer move.", err)
+})
